@@ -1,0 +1,66 @@
+﻿@{
+    ViewData["Title"] = "Главная";
+}
+@model VigenereCryptor
+<style>
+.grid-container 
+{
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+}
+textarea 
+{
+  resize: none;
+}
+</style>
+
+<form asp-action="UseCryptor" asp-controller="VigenereCryptor" method="post" enctype="multipart/form-data">
+    @Html.Hidden("dlink", @Model.DownloadLink)
+    <div class="grid-container">
+        <div class="grid-child purple">
+            Оригинальный текст:
+            <br />
+            @Html.TextAreaFor(a => a.Text, new { @style="width:500px; height:450px" } )
+        </div>
+        <div class="grid-child green">
+            Изменённый текст:
+            <br />
+            <textarea style="width:500px; height:450px" readonly placeholder="Тут появится шифрограмма">@Model.EditedText</textarea>
+        </div>
+    </div>
+
+    Ключ:
+    <br />
+    @Html.TextBoxFor(a => a.Key, new { @style="width:500px" })
+    <br />
+    <div class="row">
+        <div class="col-6 col-sm-2">
+            @Html.RadioButtonFor(a => a.Mode, true, new { @checked = "checked" }) 
+            Зашифровать
+        </div>
+        <div class="col-6 col-sm-2">
+            @Html.RadioButtonFor(a => a.Mode, false) 
+            Расшифровать
+        </div>
+    </div>
+    <br />
+    <input id="cryptButton" type="submit" class="btn btn-primary" value="Отправить"/>
+</form>
+<br />
+<form asp-action="Upload" asp-controller="VigenereCryptor" method="post" enctype="multipart/form-data">
+    <button type="submit" class="btn btn-success">Загрузить файл</button>
+    <input asp-for="File"/>
+    <span asp-validation-for="File"></span>
+</form>
+<br />
+@if (Model != null && Model.DownloadLink != null)
+{
+    <a class="btn btn-success" onclick="DownloadAlert()" href="@Model.DownloadLink">Скачать файл</a>  
+}
+<br />
+<script src="https://code.jquery.com/jquery-3.6.0.js"></script>
+<script type="text/javascript">
+function DownloadAlert(){
+    alert("Это HTTP загрузка, поэтому современные браузеры её блокируют((( Можете скопировать ссылку и вставить в новую вкладку руками");
+};
+</script>
